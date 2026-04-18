@@ -84,7 +84,7 @@ def ask_claude(chat_id: int, user_message: str) -> str:
     history = get_history(chat_id)
     
     response = client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model="claude-sonnet-4-6",
         max_tokens=1024,
         system=SYSTEM_PROMPT,
         messages=history
