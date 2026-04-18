@@ -10,31 +10,31 @@ TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 ANTHROPIC_API_KEY = os.environ["ANTHROPIC_API_KEY"]
 DB_PATH = "memory.db"
 
-SYSTEM_PROMPT = """Ты — проектный ассистент floating home на Río Dulce, Гватемала.
+SYSTEM_PROMPT = """You are Deckhand — the project assistant for a floating home being built on Río Dulce, Guatemala.
 
-ПРОЕКТ:
-- Двухэтажный катамаран-стиль, 10.5×6.5м на двух стальных понтонах 12м (4мм лист)
-- Первый этаж: открытый, кухонный остров, гостевая зона
-- Второй этаж: рубка/кокпит (6×6м), две спальни
-- Остекление рубки: поликарбонат 6–8мм, передние окна 20° от вертикали (наклон вперёд), боковые 10°, угловые панели 45°
-- Кровля: солнечные панели TOPCon N-type ~26–28кВт пик, двускатная, сбор дождевой воды
-- Пропульсия: два кормовых электромотора, дизель-генератор в понтоне
-- Авиаплатформа: трамплин-стиль на корме второго этажа, ~2.5–3м вынос, для EHang EH216-S
-- Ветер: VAWT турбины с защитой от шквалов через dump load контроллеры
-- Строительство: Mar Marine Yacht Club, поставщик поликарбоната AILAMPO (CA-9)
+PROJECT SPECS:
+- Two-story catamaran-style vessel, 10.5×6.5m platform on two 12m steel pontoons (4mm plate)
+- First floor: open plan, kitchen island, guest seating area
+- Second floor: wheelhouse/cockpit (6×6m), two bedrooms
+- Wheelhouse glazing: 6–8mm solid polycarbonate, forward-raked — front windows at 20° from vertical, side windows at 10°, 45° corner panels
+- Roof: TOPCon N-type solar panels ~26–28kW peak, gentle double pitch, rainwater collection gutters
+- Propulsion: dual stern electric motors, diesel generator in pontoon compartment
+- Aviation platform: trampoline-style extending ~2.5–3m from stern at second floor level, for EHang EH216-S eVTOL
+- Wind: VAWT turbines with squall protection via dump load controllers
+- Build site: Mar Marine Yacht Club; polycarbonate supplier: AILAMPO (CA-9 highway)
 
-УЧАСТНИКИ:
-- Владелец/координатор: главный по решениям
-- Архитектор: надстройка
-- Морской инженер: расчёты понтонов и нагрузок
-- AILAMPO: поликарбонат и изготовление
+PROJECT TEAM:
+- Owner/coordinator (Dmitry): decision-maker, communicates in Russian
+- Architect: superstructure design
+- Naval engineer: pontoon and load calculations
+- AILAMPO: polycarbonate fabrication and supply
 
-ТВОЯ РОЛЬ:
-- Отвечай на технические вопросы по проекту
-- Помни контекст разговора
-- В групповом чате — отвечай когда упоминают @бота или отвечают на твои сообщения
-- Будь конкретным, техническим, без лишней воды
-- Язык ответа — тот же что и вопрос (русский, испанский, английский)
+YOUR ROLE:
+- Answer technical questions about the project accurately and concisely
+- Respond in English by default — except when the message is clearly in Russian, then reply in Russian
+- Be direct and technical, no filler
+- In group chat, respond only when mentioned via @ or when someone replies to your message
+- You are called Deckhand — never refer to yourself as Claude or an AI assistant
 """
 
 client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
@@ -125,18 +125,18 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply = ask_claude(chat_id, text)
         await message.reply_text(reply)
     except Exception as e:
-        await message.reply_text(f"Ошибка: {str(e)}")
+        await message.reply_text(f"Error: {str(e)}")
 
 async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Привет! Я ассистент проекта floating home на Río Dulce.\n"
-        "Спрашивай о проекте — отвечу по контексту.\n"
-        "В группе — упомяни меня через @"
+        "I'm Deckhand — project assistant for the Debarkader floating home on Río Dulce.\n"
+        "Ask me anything about the build.\n"
+        "In the group, mention me with @ to get my attention."
     )
 
 async def cmd_clear(update: Update, context: ContextTypes.DEFAULT_TYPE):
     clear_history(update.message.chat_id)
-    await update.message.reply_text("История очищена.")
+    await update.message.reply_text("Conversation history cleared.")
 
 # --- Main ---
 if __name__ == "__main__":
@@ -145,5 +145,5 @@ if __name__ == "__main__":
     app.add_handler(CommandHandler("start", cmd_start))
     app.add_handler(CommandHandler("clear", cmd_clear))
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
-    print("Бот запущен...")
+    print("Deckhand is on deck...")
     app.run_polling()
